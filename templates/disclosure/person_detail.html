@@ -1,0 +1,79 @@
+{% extends "disclosure/base.html" %}
+{% block title %}{{ person }} — Employee records{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'dashboard' %}">&larr; All records</a>
+
+<div class="panel">
+  <div class="record-head">
+    <div>
+      <h1>{{ person.display_name|default:person.employee_number }}</h1>
+      <p style="margin:4px 0 0; color:var(--muted); font-size:0.9rem;">{{ person.employee_number }}</p>
+    </div>
+    <span class="role-chip">Your relationship: {{ role_label }}</span>
+  </div>
+</div>
+
+<div class="panel">
+  <h2 style="margin-bottom:6px;">Record</h2>
+  <p style="margin:0 0 14px; color:var(--muted); font-size:0.88rem;">
+    {% if total_count and visible_count == total_count %}
+      You can see all data on this record.
+    {% else %}
+      Blocked values exist on this record. They are outside of what your relationship permits
+    {% endif %}
+  </p>
+
+  {% regroup rows by category_label as groups %}
+  {% for group in groups %}
+    <div class="field-group">
+      <h3 class="group-title">
+        {{ group.grouper }}
+        {% if is_self %}<span class="group-audience">· Visible to {{ group.list.0.group_audience }}</span>{% endif %}
+      </h3>
+      {% for row in group.list %}
+        <div class="field">
+          <span class="field-label">{{ row.label }}</span>
+          <span class="field-value">
+            {% if row.visible %}
+              {{ row.value }}
+            {% else %}
+              <span class="redacted" tabindex="0" role="img"
+                    aria-label="Withheld: {{ row.category_label|lower }} data isn't disclosed to {{ role_label|lower }}"
+                    data-reason="Withheld — {{ row.category_label|lower }} data isn't disclosed to {{ role_label|lower }}"></span>
+            {% endif %}
+          </span>
+          <span class="field-edit">
+            {% if row.editable %}<a href="{% url 'edit_field' person.id row.field_name %}">Edit</a>{% endif %}
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  {% empty %}
+    <p style="color:var(--muted);">This record has no current data.</p>
+  {% endfor %}
+
+  {% if visible_count != total_count %}
+    <p class="count">{{ visible_count }} of {{ total_count }} fields disclosed to you.</p>
+  {% endif %}
+</div>
+
+{% if is_self %}
+<div class="panel">
+  <h2 style="margin-bottom:6px;">Your privacy</h2>
+  <p style="margin:0 0 14px; color:var(--muted); font-size:0.88rem;">
+    Choose to hide parts of your record from particular relationships.
+  </p>
+  <a class="btn btn-quiet" href="{% url 'privacy_settings' person.id %}">Privacy settings</a>
+</div>
+{% endif %}
+
+{% if can_see_log %}
+<div class="panel">
+  <h2 style="margin-bottom:6px;">Access history</h2>
+  <p style="margin:0 0 14px; color:var(--muted); font-size:0.88rem;">
+    Every query against this record is recorded, whether or not it was allowed.
+  </p>
+  <a class="btn btn-quiet" href="{% url 'access_log' person.id %}">View access history</a>
+</div>
+{% endif %}
+{% endblock %}

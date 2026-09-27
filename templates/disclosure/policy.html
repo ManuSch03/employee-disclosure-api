@@ -1,0 +1,87 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Disclosure policy{% endblock %}
+{% block content %}
+<h1>Disclosure policy</h1>
+<p class="lede">
+  What each relationship may read and change, by category. A dash is not an
+  oversight — where no rule grants access, access is refused.
+</p>
+
+<div class="panel" style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        <th>Relationship</th>
+        {% for c in categories %}<th>{{ c }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in grid %}
+        <tr>
+          <td><strong>{{ row.role }}</strong></td>
+          {% for cell in row.cells %}
+            <td>
+              {% if cell.can_edit %}<span class="yes">read &amp; write</span>
+              {% elif cell.can_view %}<span class="yes">read</span>
+              {% else %}<span class="no">—</span>{% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2 style="margin-bottom:6px;">Single-field rules</h2>
+  <p style="margin:0 0 14px; color:var(--muted); font-size:0.88rem;">
+    These refine the grid above for one field, and take precedence over the rule for its category.
+  </p>
+  {% if field_rules %}
+    <table>
+      <thead><tr><th>Relationship</th><th>Field</th><th>Effect</th></tr></thead>
+      <tbody>
+        {% for r in field_rules %}
+          <tr>
+            <td>{{ r.get_relationship_display }}</td>
+            <td>{{ r.field_name|cut:"_"|capfirst }} <span class="no">({{ r.get_field_category_display|lower }})</span></td>
+            <td>
+              {% if r.can_edit %}<span class="yes">read &amp; write</span>
+              {% elif r.can_view %}<span class="yes">read</span>
+              {% else %}<span class="grant-n">withheld</span>{% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p style="margin:0; color:var(--muted);">No single-field rules are in force.</p>
+  {% endif %}
+</div>
+
+{% if overrides is not None %}
+<div class="panel">
+  <h2 style="margin-bottom:6px;">Employee restrictions</h2>
+  <p style="margin:0 0 14px; color:var(--muted); font-size:0.88rem;">
+    Restrictions employees have placed on their own records. Only staff can see this list.
+  </p>
+  {% if overrides %}
+    <table>
+      <thead><tr><th>Employee</th><th>Relationship</th><th>What</th><th>Effect</th></tr></thead>
+      <tbody>
+        {% for o in overrides %}
+          <tr>
+            <td>{{ o.person }}</td>
+            <td>{{ o.get_relationship_display }}</td>
+            <td>{% if o.field_name %}{{ o.field_name|cut:"_"|capfirst }}{% else %}All {{ o.get_field_category_display|lower }} data{% endif %}</td>
+            <td>{% if o.can_view %}<span class="yes">read</span>{% else %}<span class="grant-n">withheld</span>{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p style="margin:0; color:var(--muted);">No employee has restricted their record.</p>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

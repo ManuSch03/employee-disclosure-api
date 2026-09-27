@@ -1,0 +1,29 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Records — Employee records{% endblock %}
+{% block content %}
+<h1>Records you can access</h1>
+<p class="lede">
+  You see an employee here because you hold a current relationship to their record.
+  What you can read within each record depends on that relationship.
+</p>
+
+<div class="panel">
+  {% if records %}
+    <ul class="people">
+      {% for r in records %}
+        <li>
+          <a href="{% url 'person_detail' r.person.id %}">
+            <span class="who">{{ r.person.display_name|default:r.person.employee_number }}</span>
+            <span class="emp-no">{{ r.person.employee_number }} · you are {{ r.role }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="margin:0; color:var(--muted);">
+      No records are available to you. Access begins when someone records a
+      relationship between you and an employee.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

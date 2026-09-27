@@ -1,0 +1,70 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Privacy settings{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'person_detail' person.id %}">&larr; My record</a>
+
+<div class="panel">
+  <h1>Privacy settings</h1>
+  <p class="lede" style="margin-bottom:0;">
+    Restrict who can see parts of your record beyond the organisation's standard policy.
+    You can only take access away here — some access exists for legal or payroll reasons
+    and can't be widened from your side.
+  </p>
+</div>
+
+<form method="post" class="panel">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="add">
+  <h2 style="margin-bottom:14px;">Add a restriction</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+    <div>
+      <label for="id_relationship">Hide from</label>
+      <select name="relationship" id="id_relationship" required>
+        <option value="">Choose…</option>
+        {% for value, label in roles %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="id_target">What to hide</label>
+      <select name="target" id="id_target" required>
+        <option value="">Choose…</option>
+        {% for group in targets %}
+          <optgroup label="{{ group.label }}">
+            {% for value, label in group.options %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+          </optgroup>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <button type="submit">Add restriction</button>
+</form>
+
+<div class="panel">
+  <h2 style="margin-bottom:12px;">Current restrictions</h2>
+  {% if restrictions %}
+    <table>
+      <thead><tr><th>Hidden from</th><th>What</th><th></th></tr></thead>
+      <tbody>
+        {% for r in restrictions %}
+          <tr>
+            <td>{{ r.get_relationship_display }}</td>
+            <td>{% if r.field_name %}{{ r.field_name|cut:"_"|capfirst }}{% else %}All {{ r.get_field_category_display|lower }} data{% endif %}</td>
+            <td style="text-align:right;">
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="rule_id" value="{{ r.id }}">
+                <button type="submit" class="btn-quiet">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p style="margin:0; color:var(--muted);">
+      No restrictions. Everyone sees what the organisation policy allows.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

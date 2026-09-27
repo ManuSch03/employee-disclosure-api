@@ -1,0 +1,46 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Employee records{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'disclosure/app.css' %}?v=3"></head>
+<body>
+{% if user.is_authenticated %}
+<header class="bar">
+  <div class="bar-inner">
+    <a class="bar-title" href="{% url 'dashboard' %}">Employee records</a>
+    <nav>
+      {% if user.requester %}<a href="{% url 'dashboard' %}">Records</a>{% endif %}
+      <a href="{% url 'policy' %}">Disclosure policy</a>
+      {% if user.is_staff %}<a href="/admin/">Administration</a>{% endif %}
+      <form method="post" action="{% url 'sign_out' %}" class="inline-form">
+        {% csrf_token %}
+        <button type="submit" class="link-button">Sign out</button>
+      </form>
+    </nav>
+  </div>
+  <div class="bar-inner bar-inner-sub">
+    <span class="signed-in">
+      Signed in as {{ user.username }}{% if user.requester %} — {{ user.requester.name }}{% endif %}
+    </span>
+  </div>
+</header>
+{% endif %}
+
+<div class="shell">
+  {% if messages %}
+    <div class="messages" role="status" aria-live="polite">
+      {% for m in messages %}
+        <div class="msg msg-{{ m.tags }}">
+          <span>{{ m }}</span>
+          <button type="button" class="msg-close" aria-label="Dismiss"
+                  onclick="this.parentElement.remove()">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

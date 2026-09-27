@@ -1,0 +1,25 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Sign in — Employee records{% endblock %}
+{% block content %}
+<div style="max-width:380px; margin:60px auto 0;">
+  <h1>Employee records</h1>
+  <p class="lede">Sign in to see the records you are authorised to access.</p>
+
+  {% if form.errors %}
+    <div class="msg msg-error">That username and password don't match an account.</div>
+  {% endif %}
+
+  <form method="post" class="panel">
+    {% csrf_token %}
+    <div style="margin-bottom:14px;">
+      <label for="id_username">Username</label>
+      <input type="text" name="username" id="id_username" autofocus autocomplete="username" required>
+    </div>
+    <div style="margin-bottom:18px;">
+      <label for="id_password">Password</label>
+      <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+    </div>
+    <button type="submit">Sign in</button>
+  </form>
+</div>
+{% endblock %}

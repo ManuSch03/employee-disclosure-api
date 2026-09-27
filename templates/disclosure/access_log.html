@@ -1,0 +1,40 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Access history — {{ person }}{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'person_detail' person.id %}">&larr; {{ person }}</a>
+
+<div class="panel">
+  <h1>Access history</h1>
+  <p class="lede" style="margin-bottom:0;">
+    Every query against {{ person }}'s record. The log records that a query happened
+    and whether it was allowed — never the value returned, so it cannot become a
+    second copy of the data it describes.
+  </p>
+</div>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr><th>When</th><th>Requester</th><th>Field</th><th>Outcome</th></tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+        <tr>
+          <td>{{ e.queried_at|date:"j M Y, H:i:s" }}</td>
+          <td>{{ e.requester.name|default:"—" }}</td>
+          <td>{{ e.field_name|cut:"_"|capfirst }}</td>
+          <td>
+            {% if e.was_granted %}
+              <span class="grant-y">Disclosed</span>
+            {% else %}
+              <span class="grant-n">Withheld</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" style="color:var(--muted);">Nothing has queried this record yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

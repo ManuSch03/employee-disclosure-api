@@ -1,0 +1,12 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Not available{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'dashboard' %}">&larr; All records</a>
+<div class="panel">
+  <h1>Not available</h1>
+  <p class="lede" style="margin-bottom:0;">
+    This record isn't available to you. If you need access, ask whoever administers
+    employee records to record the relationship that justifies it.
+  </p>
+</div>
+{% endblock %}

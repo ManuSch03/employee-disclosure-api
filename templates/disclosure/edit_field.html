@@ -1,0 +1,41 @@
+{% extends "disclosure/base.html" %}
+{% block title %}Edit {{ label }} — {{ person }}{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'person_detail' person.id %}">&larr; {{ person }}</a>
+
+<div class="panel">
+  <h1>{{ label }}</h1>
+  <p class="lede" style="margin-bottom:0;">
+    Saving keeps the previous value. Nothing on this record is overwritten, so the
+    history below stays answerable.
+  </p>
+</div>
+
+<form method="post" class="panel">
+  {% csrf_token %}
+  <div style="margin-bottom:16px;">
+    <label for="id_value">Value</label>
+    <input type="text" name="value" id="id_value" value="{{ field.value }}" autofocus required>
+  </div>
+  <button type="submit">Save changes</button>
+  <a class="btn btn-quiet" href="{% url 'person_detail' person.id %}">Cancel</a>
+</form>
+
+<div class="panel">
+  <h2 style="margin-bottom:12px;">History</h2>
+  <table>
+    <thead>
+      <tr><th>Value</th><th>From</th><th>Until</th></tr>
+    </thead>
+    <tbody>
+      {% for h in history %}
+        <tr>
+          <td>{{ h.value }}</td>
+          <td>{{ h.valid_from|date:"j M Y, H:i" }}</td>
+          <td>{% if h.valid_to %}{{ h.valid_to|date:"j M Y, H:i" }}{% else %}<span class="yes">current</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
