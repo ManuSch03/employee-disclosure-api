@@ -28,7 +28,11 @@
     <div class="field-group">
       <h3 class="group-title">
         {{ group.grouper }}
-        {% if is_self %}<span class="group-audience">· Visible to {{ group.list.0.group_audience }}</span>{% endif %}
+        {% if is_self %}
+          <span class="group-audience">· Visible to {{ group.list.0.group_audience }}</span>
+        {% elif group.list.0.group_all_hidden %}
+          <span class="group-audience">· Not disclosed to {{ role_label }}</span>
+        {% endif %}
       </h3>
       {% for row in group.list %}
         <div class="field">
@@ -37,9 +41,11 @@
             {% if row.visible %}
               {{ row.value }}
             {% else %}
-              <span class="redacted" tabindex="0" role="img"
-                    aria-label="Withheld: {{ row.category_label|lower }} data isn't disclosed to {{ role_label|lower }}"
-                    data-reason="Withheld — {{ row.category_label|lower }} data isn't disclosed to {{ role_label|lower }}"></span>
+              <span class="redacted" role="img"
+                    aria-label="Withheld, not disclosed to {{ role_label }}"></span>
+              {% if not row.group_all_hidden %}
+                <span class="withheld-reason">Not disclosed to {{ role_label }}</span>
+              {% endif %}
             {% endif %}
           </span>
           <span class="field-edit">

@@ -105,17 +105,15 @@ header.bar {
 .redacted {
   display: inline-block; min-width: 148px; height: 1.15em;
   background: var(--block); border-radius: 1px; vertical-align: text-bottom;
-  position: relative; cursor: help;
+  position: relative; cursor: default;
 }
-.redacted::after {
-  content: attr(data-reason);
-  position: absolute; left: 0; top: calc(100% + 6px);
-  background: var(--ink); color: var(--paper);
-  font-size: 0.75rem; line-height: 1.4; padding: 5px 8px;
-  border-radius: 2px; white-space: nowrap; z-index: 5;
-  opacity: 0; pointer-events: none; transition: opacity .12s ease;
+
+.withheld-reason {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--muted);
 }
-.redacted:hover::after, .redacted:focus::after { opacity: 1; }
 
 .count { font-size: 0.85rem; color: var(--muted); margin-top: 18px; }
 

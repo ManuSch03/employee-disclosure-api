@@ -103,6 +103,13 @@ def person_detail(request, person_id):
         for row in profile["rows"]:
             row["group_audience"] = summary[row["category_label"]]
 
+    # For each category, is every field hidden from this requester?
+    hidden = {}
+    for row in profile["rows"]:
+        hidden.setdefault(row["category"], []).append(not row["visible"])
+    for row in profile["rows"]:
+        row["group_all_hidden"] = all(hidden[row["category"]])
+
     return render(request, "disclosure/person_detail.html", {
         "person": person,
         "requester": requester,

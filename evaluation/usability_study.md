@@ -44,9 +44,12 @@ Then one open question: *"Was anything confusing?"*
 
 | Participant | T1 | T2 | T3 | T4 | T5 | T6 | Q1 | Q2 | Q3 | Q4 | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| P1 | | | | | | | | | | | |
-| P2 | | | | | | | | | | | |
-| P3 | | | | | | | | | | | |
+| P1 |yes|no|yes|yes|yes|yes|5|3|4|4|It is never explicitly said why information is hidden|
+| P2 |yes|yes|yes|yes|yes|yes|5|4|3|5|Information about hidden data is only shown if you hover over. That is hard to find if you do not know|
+| P3 |yes|no|yes|yes|yes|yes|5|4|4|5|Nice to see who can see your personal data|
+| P1 |yes|yes|yes|yes|yes|yes|5|5|4|4|Now you can see why data is hidden|
+| P2 |yes|yes|yes|yes|yes|yes|5|5|3|5|The information about hidden data is now shown directly, great.|
+| P3 |yes|yes|yes|yes|yes|yes|5|5|4|5|Nothing|
 
 ## What to look for
 
